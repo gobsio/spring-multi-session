@@ -1,0 +1,50 @@
+server:
+  port: ${PORT:9092}
+  servlet:
+    context-path: /
+
+spring:
+  datasource:
+    # url: jdbc:h2:mem:db;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=60 # ";DB_CLOSE_ON_EXIT=FALSE" # ";DB_CLOSE_ON_EXIT=FALSE"
+    # username: sa
+    # password: sa
+    # driver-class-name: org.h2.Driver
+    url: jdbc:postgresql://ec2-54-235-192-146.compute-1.amazonaws.com:5432/d3grgtrh7uqaqj
+    username: otombrmkgdussz
+    password: f1d12efb4eb705a53a180bd7eb829100d54f69ec108741802c512baa9b2b5516
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    # 'spring.jpa.open-in-view' is enabled by default. 
+    # Therefore, database queries may be performed during view rendering. 
+    # Explicitly configure spring.jpa.open-in-view to disable this warning
+    open-in-view: false 
+
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    show-sql: ${HIBERNATE_SHOW_SQL:false}
+    properties:
+      hibernate:
+        generate_statistics: ${HIBERNATE_STATISTICS:false}
+        temp:
+          use_jdbc_metadata_defaults: false
+  # h2.console.enabled: true
+
+  # session: 
+  #   store-type: jdbc
+  #   jdbc: 
+  #     initialize-schema: always
+
+spring.datasource.initialization-mode: always
+
+
+security:
+  jwt:
+    key-store: classpath:keystore/gobsio.p12
+    key-store-password: gobsio
+    key-pair-alias: gobsio
+    key-pair-password: gobsio
+
+
+auth.cookie.hmac-key: "y.E@EA!FbtCwXYB-2v_n.!*xgzRqgtbq2d2_A_U!W2hubL@URHRzNP96WNPxEcXK"

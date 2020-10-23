@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" class="loading" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Ottimizza Conta do Usuario.">
+  <meta name="keywords" content="Ottimizza, Ottimizza conta, Ottimizza entrar, Ottimizza login">
+  <meta name="author" content="Ottimizza">
+  <title th:text="${title}"></title>
+  <link href="https://fonts.googleapis.com/css?family=Rubik:300,400,500,700,900|Montserrat:300,400,500,600,700,800,900"
+    rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="/assets/fonts/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/oauth/account_chooser.css}">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/global.css}">
+</head>
+
+<body>
+
+  <div class="page-wrapper">
+    <div class="form-container">
+      <div class="form-header" style="text-align: center;">
+        Gerenciamento de Contas
+      </div>
+      <form class="form-body" method="post" action="/switch">
+        <ul class="oauthusers">
+          <li class="oauthuser" th:each="authenticatedAccount: ${authenticatedAccounts}"
+            th:data-identifier="${authenticatedAccount.username}" th:data-alias="${authenticatedAccount.alias}">
+            <div class="oauthuser-details">
+              <div class="avatar">
+                <img th:src="${authenticatedAccount.avatar}"
+                  onerror="this.onerror=null;this.src='/assets/img/portrait/avatars/portrait.png';" width="40"
+                  height="40" class="img-thumbnail rounded-circle">
+              </div>
+              <div class="details">
+                <div class="name">
+                  <span th:text="${authenticatedAccount.firstName}"></span>
+                  <span th:text="${authenticatedAccount.lastName}"></span>
+                </div>
+                <div class="username">
+                  <small th:text="${authenticatedAccount.username}"></small>
+                </div>
+              </div>
+              <div class="action" style="display: none;">
+                <a class="button" style="margin: 4px;padding: 4px 10px;font-size: 12px; " href="/logout">
+                  <i class="fa fa-caret-down"></i>
+                </a>
+              </div>
+            </div>
+            <div class="oauthuser-actions">
+              <div class="action">
+                <a th:data-oauthuser="${authenticatedAccount.alias}" class="button"
+                  style="margin: 4px;padding: 4px 10px;font-size: 12px; " onclick="oauthSingleUserLogout(this)">
+                  Remover
+                </a>
+              </div>
+            </div>
+          </li>
+          <li id="add-oauthuser" class="oauthuser">
+            <div class="oauthuser-details" style="border: none;padding: 0.5rem 0;">
+              <div class="avatar">
+                <img src="https://cdn.iconscout.com/icon/free/png-512/add-person-1767897-1502150.png" width="40"
+                  height="40" class="img-thumbnail rounded-circle" style="padding: 9px 9px;border: none"></a>
+              </div>
+              <div class="details">
+                <div class="name">
+                  <span>Adicionar outra conta</span>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </form>
+      <div class="card-footer">
+        <a class="button" style="margin: 16px; " href="/logout">
+          Sair de todas as contas
+        </a>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <script>
+    const LOGIN_FORM_URL = '/login';
+    const REDIRECT_PARAM = "redirect";
+
+
+    /**
+      * sends a request to the specified url from a form. this will change the window location.
+      * @param {string} path the path to send the post request to
+      * @param {object} params the paramiters to add to the url
+      * @param {string} [method=post] the method to use on the form
+      */
+
+    function post(path, params, method = 'post') {
+
+      // The rest of this code assumes you are not using a library.
+      // It can be made less wordy if you use one.
+      const form = document.createElement('form');
+      form.method = method;
+      form.action = path;
+
+      for (const key in params) {
+        if (params.hasOwnProperty(key)) {
+          const hiddenField = document.createElement('input');
+          hiddenField.type = 'hidden';
+          hiddenField.name = key;
+          hiddenField.value = params[key];
+
+          form.appendChild(hiddenField);
+        }
+      }
+
+      document.body.appendChild(form);
+      form.submit();
+    }
+
+    let elements = document.querySelectorAll('.oauthuser');
+    let addAuthenticatedAccountElement = document.querySelector('#add-oauthuser');
+
+    const SHOW_OAUTHUSER_ACTION_CLASS = 'show-actions';
+
+    elements.forEach(function (element) {
+      const IDENTIFIER = element.getAttribute('data-identifier');
+      const XOAUTHUSER = element.getAttribute('data-alias');
+
+      element.addEventListener('click', () => {
+        const classname = SHOW_OAUTHUSER_ACTION_CLASS;
+        // 
+        if (element.classList.contains(classname)) {
+          clearClass(elements, SHOW_OAUTHUSER_ACTION_CLASS);
+        } else {
+          clearClass(elements, SHOW_OAUTHUSER_ACTION_CLASS);
+          element.classList.add(SHOW_OAUTHUSER_ACTION_CLASS);
+        }
+      });
+    });
+
+    let oauthSingleUserLogout = ((element) => {
+      const OAUTHUSER = element.getAttribute('data-oauthuser');
+      post(`/oauth/${OAUTHUSER}/logout`, {});
+    });
+
+
+    let clearClass = ((elements, classname) => {
+      elements.forEach((element) => {
+        element.classList.remove(classname)
+      });
+    });
+
+    let toggleClass = ((element, classname) => {
+      element.classList.contains(classname) ?
+        element.classList.remove(classname)
+        : element.classList.add(classname);
+    });
+
+
+    addAuthenticatedAccountElement.addEventListener('click', () => {
+      window.location.href = `${LOGIN_FORM_URL}?${REDIRECT_PARAM}=${window.location.pathname}`;
+    });
+
+  </script>
+</body>
+
+
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" class="loading" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Ottimizza Conta do Usuario.">
+  <meta name="keywords" content="Ottimizza, Ottimizza conta, Ottimizza entrar, Ottimizza login">
+  <meta name="author" content="Ottimizza">
+  <title th:text="${title}"></title>
+  <link href="https://fonts.googleapis.com/css?family=Rubik:300,400,500,700,900|Montserrat:300,400,500,600,700,800,900"
+    rel="stylesheet">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/oauth/account_chooser.css}">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/global.css}">
+</head>
+
+<body>
+
+  <div class="page-wrapper">
+    <div class="form-container">
+      <div class="form-header">
+        Login com Gobsio <br>
+        <!-- <small th:text="${principal.principal}"></small> -->
+      </div>
+      <form class="form-body" method="post" action="/switch">
+        <ul class="oauthusers">
+          <li class="oauthuser" th:each="authenticatedAccount: ${authenticatedAccounts}"
+            th:data-identifier="${authenticatedAccount.username}" th:data-alias="${authenticatedAccount.alias}">
+            <div class="oauthuser-details">
+              <div class="avatar">
+                <img th:src="${authenticatedAccount.avatar}" width="45" height="45"
+                  class="img-thumbnail rounded-circle">
+              </div>
+              <div class="details">
+                <div class="name">
+                  <span th:text="${authenticatedAccount.firstName}"></span>
+                  <span th:text="${authenticatedAccount.lastName}"></span>
+                </div>
+                <div class="username">
+                  <small th:text="${authenticatedAccount.username}"></small>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li id="add-oauthuser" class="oauthuser">
+            <div class="oauthuser-details" style="padding: 0.15rem 0;">
+              <div class="avatar" style="padding: 10px 5px;">
+                <img src="https://cdn.iconscout.com/icon/free/png-512/add-person-1767897-1502150.png" width="35"
+                  height="25" class="img-thumbnail rounded-circle"></a>
+              </div>
+              <div class="details">
+                <div class="name">
+                  <span>Usar outra conta</span>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+    </div>
+    <div class="form-footer"></div>
+  </div>
+  </div>
+
+  <script>
+    const LOGIN_FORM_URL = '/login';
+    const REDIRECT_PARAM = "redirect";
+
+
+    /**
+      * sends a request to the specified url from a form. this will change the window location.
+      * @param {string} path the path to send the post request to
+      * @param {object} params the paramiters to add to the url
+      * @param {string} [method=post] the method to use on the form
+      */
+
+    function post(path, params, method = 'post') {
+
+      // The rest of this code assumes you are not using a library.
+      // It can be made less wordy if you use one.
+      const form = document.createElement('form');
+      form.method = method;
+      form.action = path;
+
+      for (const key in params) {
+        if (params.hasOwnProperty(key)) {
+          const hiddenField = document.createElement('input');
+          hiddenField.type = 'hidden';
+          hiddenField.name = key;
+          hiddenField.value = params[key];
+
+          form.appendChild(hiddenField);
+        }
+      }
+
+      document.body.appendChild(form);
+      form.submit();
+    }
+
+    let authenticatedAccountElements = document.querySelectorAll('.oauthuser');
+    let addAuthenticatedAccountElement = document.querySelector('#add-oauthuser');
+
+    authenticatedAccountElements.forEach(function (element) {
+      const QUERYSTRING = window.location.search;
+      const IDENTIFIER = element.getAttribute('data-identifier');
+      const XOAUTHUSER = element.getAttribute('data-alias');
+
+      element.addEventListener('click', () => {
+        post(`/oauth/authorize/oauthchooseaccount${QUERYSTRING}`, {
+          'oauthuser': XOAUTHUSER
+        });
+      });
+    });
+
+    addAuthenticatedAccountElement.addEventListener('click', () => {
+      let pathname = window.location.pathname.replace('/oauthchooseaccount', '');
+      let search = window.location.search;
+      window.location.href = `${LOGIN_FORM_URL}?${REDIRECT_PARAM}=${pathname}${search}`;
+    });
+
+  </script>
+</body>
+
+
+</html>

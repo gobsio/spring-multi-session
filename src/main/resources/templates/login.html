@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" class="loading" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+  <meta name="description" content="Ottimizza Conta do Usuario.">
+  <meta name="keywords" content="Ottimizza, Ottimizza conta, Ottimizza entrar, Ottimizza login">
+  <meta name="author" content="Ottimizza">
+  <title th:text="${title}"></title>
+  <link rel="apple-touch-icon" sizes="60x60" href="assets/img/ico/apple-icon-60.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="assets/img/ico/apple-icon-76.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="assets/img/ico/apple-icon-120.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="assets/img/ico/apple-icon-152.png">
+  <link rel="shortcut icon" type="image/x-icon" href="assets/img/ico/favicon.ico">
+  <link rel="shortcut icon" type="image/png" href="assets/img/ico/favicon-32.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-touch-fullscreen" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+  <link rel="stylesheet" type="text/css" href="assets/fonts/feather/style.min.css">
+  <link rel="stylesheet" type="text/css" href="assets/fonts/font-awesome/css/font-awesome.min.css">
+
+  <link rel="stylesheet" type="text/css" href="css/login.css">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Rubik:300,400,500,700,900|Montserrat:300,400,500,600,700,800,900"
+    rel="stylesheet">
+
+  <!-- Styles Vendors -->
+  <link rel="stylesheet" type="text/css" th:href="@{/assets/vendors/css/perfect-scrollbar.min.css}">
+  <link rel="stylesheet" type="text/css" th:href="@{/assets/vendors/css/prism.min.css}">
+
+  <link rel="stylesheet" type="text/css" th:href="@{/assets/vendors/cropperjs/cropper.css}">
+  <script th:src="@{/assets/vendors/cropperjs/cropper.js}"></script>
+
+  <!-- Styles App -->
+  <link rel="stylesheet" type="text/css" th:href="@{/assets/css/app.css}">
+
+  <!-- Styles Custom -->
+  <link rel="stylesheet" type="text/css" th:href="@{/css/signin/signin.css}">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/overwritten.css}">
+
+  <style>
+    .container {
+      width: 100%;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .form-login {
+      /* width: ; */
+    }
+  </style>
+
+</head>
+
+<body data-col="1-column" class=" 1-column  blank-page" th:style="'background-color: ' + ${background} + ';'">
+  <div th:fragment="content" class="wrapper">
+    <div class="main-panel">
+      <div class="main-content">
+        <div class="content-wrapper">
+          <section id="login">
+            <div class="container-fluid">
+              <div class="row full-height-vh m-0">
+                <div class="col-12 d-flex flex-column align-items-center justify-content-center">
+                  <div th:if="${logo} != null" class="d-block d-sm-block d-md-none text-center mb-2">
+                    <img width="200px" th:src="${logo}" alt="">
+                  </div>
+                  <div th:if="${logo} != null" class="d-none d-md-block d-lg-none text-center mb-3">
+                    <img width="200px" th:src="${logo}" alt="">
+                  </div>
+                  <div th:if="${logo} != null" class="d-none d-lg-block text-center mb-4">
+                    <img width="200px" th:src="${logo}" alt="">
+                  </div>
+                  <div class="card">
+                    <div class="card-content">
+                      <div class="card-body login-img">
+                        <div class="row m-0">
+                          <form id="form-login" s="f" th:action="${formAction}" method="post"
+                            class="col-lg-12 col-md-12 bg-white px-4 pt-4 pb-5">
+                            <h4 class="mb-2 card-title">Entrar</h4>
+                            <p class="card-text mb-3">
+                              Bem vindo de volta, informe seu email e senha para acessar o sistema.
+                            </p>
+                            <div th:if="${param.error != null}" role="alert"
+                              class="alert bg-warning alert-icon-left alert-dismissible mb-3 px-3">
+                              <strong>Oops!</strong> <span>Email e/ou senha incorretos.</span>
+                            </div>
+                            <input type="text" id="username" name="username" class="form-control mb-3"
+                              placeholder="Email" tabindex="1" required />
+                            <div class="position-relative has-icon-right">
+                              <input id="password" type="password" name="password" class="form-control mb-1"
+                                placeholder="Senha" tabindex="2" required />
+                              <div id="passwordFieldToggle" class="form-control-position"
+                                onclick="passwordFieldTypeToggle()">
+                                <i class="ft-eye dark"></i>
+                              </div>
+                            </div>
+                            <div class="d-flex justify-content-between mt-2">
+                              <div class="forgot-password-option">
+                                <a href="password_recovery" class="text-decoration-none text-primary" tabindex="3">
+                                  Esqueceu sua Senha?
+                                </a>
+                              </div>
+                            </div>
+                            <div class="col-12 p-0">
+                              <div class="container-fluid p-0">
+                                <div class="row m-0 justify-content-between">
+                                  <div></div>
+                                  <button id="btn-login" type="submit" class="btn btn-primary text-uppercase "
+                                    tabindex="5">
+                                    <span class="text-decoration-none text-white">Entrar</span>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
