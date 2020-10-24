@@ -37,9 +37,6 @@ public class AuthController {
     private SecurityService securityService;
 
     @Autowired
-    private HttpSessionRepository httpSessionRepository;
-
-    @Autowired
     private HttpSessionPrincipalsRepository httpSessionPrincipalsRepository;
 
     @GetMapping("/userinfo")
@@ -59,8 +56,6 @@ public class AuthController {
     @GetMapping("/authorize/oauthchooseaccount")
     public String oauthChooseAccount(Model model, HttpServletRequest request, HttpServletResponse response,
             Principal principal) throws Exception {
-        AuthorizationRequest authorizationRequest;
-
         String ssid = securityService.getSSIDFromRequest(request);
 
         if (ssid != null) {
@@ -71,7 +66,7 @@ public class AuthController {
             model.addAttribute("authenticatedAccounts", authenticatedAccounts);
         }
 
-        return "oauth/account_chooser.html";
+        return "oauth/oauthchooseaccount.html";
     }
 
     @PostMapping("/authorize/oauthchooseaccount")
@@ -80,6 +75,8 @@ public class AuthController {
         String queryString = request.getQueryString();
 
         List<String> oauthRequestParams = Arrays.asList("client_id", "response_type", "redirect_uri");
+
+        this.securityService.switchOAuthUser(oauthUser, request);
 
         if (request.getParameterMap().keySet().containsAll(oauthRequestParams)) {
             return "redirect:/oauth/authorize?" + queryString;

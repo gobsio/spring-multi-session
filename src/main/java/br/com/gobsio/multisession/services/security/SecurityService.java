@@ -87,11 +87,26 @@ public class SecurityService {
             this.httpSessionDetailsRepository.delete(session);
 
             this.emptySecurityContext();
-            
+
             return true;
         }
 
     }
+
+    public void switchOAuthUser(String oauthuser, HttpServletRequest request) {
+        UUID hsid = UUID.fromString(getSSIDFromRequest(request));
+
+        HttpSessionDetails session = this.httpSessionDetailsRepository.findById(hsid).orElse(null);
+        HttpSessionPrincipal principal = this.httpSessionPrincipalsRepository.findBySessionIdAndAlias(hsid, oauthuser);
+
+        session.setAlias(principal.getAlias());
+        session.setPrincipal(principal.getPrincipal());
+
+        this.httpSessionDetailsRepository.save(session);
+
+        this.updateSecurityContext(session);
+    }
+
 
     public Optional<OAuth2Authentication> readCookieAuthenticationFromRequest(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
